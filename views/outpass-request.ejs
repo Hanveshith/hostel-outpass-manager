@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Request-Outpass</title>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <div class="h-20 flex  justify-center items-center bg-amber-400 rounded-b-lg h-12 text-2xl font-medium leading-tight text-gray-600">
+                <h5>REQUEST OUTPASS</h5>
+            </div>
+        </div>
+        <div class="m-2 p-2 border-2 bg-green-500 rounded-lg">
+            <form action="/addrequest" method="post">
+                <div class="p-2 flex flex-col">
+                    <div class="flex flex-col mb-4">
+                        <label class="text-xl text-white" for="place">PLACE TO BE VISITED :</label>
+                        <input class="h-8 p-2 rounded  hover:bg-gray-700 hover:text-white focus:outline-0" type="text" id="place" name="PlaceToBeVisited" placeholder="Enter place to be visited"/>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="text-xl text-white" for="purpose">PURPOSE :</label>
+                        <input class="h-8 p-2 rounded  hover:bg-gray-700 hover:text-white focus:outline-0" type="text" id="purpose" name="PurposeOfVisit" placeholder="Enter purpose of visit"/>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="text-xl text-white" for="datetimeout">DATE AND TIMEOUT :</label>
+                        <input class="h-8 p-2 rounded focus:outline-0" type="datetime-local" id="datetimeout" name="DateTimeOut"/>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label class="text-xl text-white" for="datetimein">DATE AND TIMEIN :</label>
+                        <input class="h-8 p-2 rounded focus:outline-0" type="datetime-local" id="datetimein" name="DateTimein" />
+                    </div>
+                </div>
+                <div>
+                    <button class=" m-2 p-2 hover:text-white hover:bg-amber-500 bg-amber-400 text w-20 rounded" type="submit">REQUEST</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

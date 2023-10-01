@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudentView</title>
+    <style>/* Styles for the modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            z-index: 9999; /* Ensure the modal is on top of other content */
+            overflow: hidden;
+            backdrop-filter: blur(5px); /* Apply a blur effect to the underlying content */
+        }
+        
+        /* Styles for the modal content */
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            z-index: 10000; /* Ensure the modal content is on top of the overlay */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); /* Add a shadow for the modal content */
+        }
+        
+        /* Styles for the close button */
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        function viewQR(outpassId) {
+    // Send an AJAX request to fetch the QR code BLOB data from the server
+    fetch(`/getQRCode/${outpassId}`)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            // Convert the BLOB data to a base64-encoded URL
+            const qrCodeImageURL = `data:image/png;base64,${arrayBufferToBase64(data)}`;
+
+            // Display the QR code
+            const qrCodeImageElement = document.getElementById('qrCodeImage');
+            qrCodeImageElement.src = qrCodeImageURL;
+
+            // Show the modal overlay
+            const modalOverlay = document.getElementById('modalOverlay');
+            modalOverlay.style.display = 'block';
+
+            // Disable scrolling on the body while the modal is displayed
+            document.body.style.overflow = 'hidden';
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+
+// Function to convert an array buffer to a base64-encoded string
+function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+}
+
+
+function closeQR() {
+    // Hide the modal overlay
+    const modalOverlay = document.getElementById('modalOverlay');
+    modalOverlay.style.display = 'none';
+
+    // Clear the QR code image source
+    const qrCodeImageElement = document.getElementById('qrCodeImage');
+    qrCodeImageElement.src = '';
+
+    // Re-enable scrolling on the body
+    document.body.style.overflow = 'auto';
+}
+
+
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="bg-black rounded-lg bg-opacity-70">
+            <div class="block p-8 h-54 rounded-lg opacity-80 bg-white bg-cover p-6 shadow-lg dark:bg-neutral-700"
+                style="background-image: url('./images/hstl.jpg');">
+                <div class="flex justify-center flex-col items-center">
+                    <h5 class="mb-2 mt-2 text-4xl font-medium leading-tight text-gray-800">
+                        WELCOME
+                    </h5>
+                    <p class="mb-2 text-xl font-medium text-white">
+                        HELLO <%= user.firstName %>
+                    </p>
+                    <a href="/requestoutpass"
+                        class="inline-block mt-10  rounded border-2 border-green-600 px-6 pb-[6px] pt-2 text-xs bg-green-600 font-bold uppercase leading-normal text-white transition duration-150 ease-in-out hover:border-neutral-100 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-neutral-100 focus:border-neutral-100 focus:text-neutral-100 focus:outline-none focus:ring-0 active:border-neutral-200 active:text-neutral-200 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10"
+                        data-te-ripple-init>
+                        MAKE REQUESTS
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 p-2 ">
+            <div class="p-2 bg-amber-400 rounded-lg h-full text-xl font-medium leading-tight text-gray-800">
+                <div class="flex justify-center mb-1">
+                    <h5>REQUESTED OUTPASSES(TODAY)</h5>
+                </div>
+                <% for(let i=0; i < outpasses.length; i++) { %>
+                <div class="border-2 rounded p-2">
+                    <div class="mt-1 font-thin">
+                        <h5 class="font-medium">Outpass <%= outpasses[i].id %></h5>
+                        <% const OutpassDateTimeOut = new Date(outpasses[i].datetimeout); %>
+                        <p>DateTimeOut: <%= OutpassDateTimeOut.toLocaleString('en-US', { timeZone: 'UTC' }) %></p>
+                    </div>
+                    <div class="mt-2 mb-1">
+                        Status: <span class="font-thin"><%= outpasses[i].status==false?"Pending":"Accepted" %></span>
+                    </div>
+                    <% if (outpasses[i].status == true) { %>
+                        <a class="mt-1 rounded font-thin bg-green-500" href="#" onclick="viewQR('<%= outpasses[i].id %>')"><span class="m-1 p-1">View QR</span></a>
+                    <% } %>
+                    <div id="modalOverlay" class="modal-overlay" style="display: none;">
+                        <div id="qrCodeContainer" class="modal-content">
+                            <span class="close" onclick="closeQR()">&times;</span>
+                            <img id="qrCodeImage" src="" alt="QR Code" />
+                        </div>
+                    </div>
+                    
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <div class="mt-4 p-2">
+            <div class="p-2 h-12 h-20 border-2 rounded-lg shadow-lg flex justify-center items-center text-xl font-medium leading-tight text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mt-1 mx-2 fill-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0M3.124 7.5A8.969 8.969 0 015.292 3m13.416 0a8.969 8.969 0 012.168 4.5" />
+                  </svg><h5>EMERGENCY OUTPASS</h5>            
+            </div>
+        </div>
+        <div class="mt-4 p-2">
+            <div class="p-2 h-12 h-20 border-2 rounded-lg shadow-lg flex justify-center items-center text-xl font-medium leading-tight text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mt-1 mx-2 fill-green-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <h5>ACCEPTED OUTPASSES</h5>            
+            </div>
+        </div>
+        <div class="mt-4 p-2">
+            <div class="p-2 h-12 h-20 border-2 rounded-lg shadow-lg flex justify-center items-center text-xl font-medium leading-tight text-gray-800">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 mt-1 mx-2 fill-red-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>                  
+                  <h5>REJECTED OUTPASSES</h5>            
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
