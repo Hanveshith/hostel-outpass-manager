@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       })
     }
   }
+  
   Students.init({
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
@@ -29,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     address: DataTypes.STRING,
     parentcontact: DataTypes.STRING,
     currentyear: DataTypes.STRING,
-    branch: DataTypes.STRING
+    branch: DataTypes.STRING,
+    photo: DataTypes.BLOB
   }, {
     sequelize,
     modelName: 'Students',

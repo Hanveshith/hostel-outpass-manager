@@ -3,24 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
     <title>Accepted Outpasses</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f4f8; /* Background color */
+        }
+
+        .container {
+            margin: auto;
+            padding: 1rem;
+        }
+
+        .header {
+            background: linear-gradient(to right, #2a2a72, #009ffd);
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .outpass-card {
+            background-color: #f9f958; /* Light Green */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+        }
+
+        .outpass-card h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2a2a72; /* Dark Blue */
+        }
+
+        .outpass-card p {
+            font-size: 0.875rem;
+            color: #777; /* Gray */
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <div>
-            <div class="h-20 flex  justify-center items-center bg-amber-400 rounded-b-lg h-12 text-2xl font-medium leading-tight text-gray-600">
-                <h5>ACCEPTED OUTPASS</h5>
-            </div>
+        <div class="header">
+            <h2 class="text-2xl">ACCEPTED OUTPASSES</h2>
         </div>
-        <div class="mt-4 p-2 ">
+        <div class="mt-4 p-2">
             <% for(let i=0; i < acceptedoutpasses.length; i++) { %>
-            <div class="p-2 bg-green-400 rounded-lg h-20 text-xl font-medium leading-tight text-gray-800">
-                <div class="mt-1 font-medium">
-                    <h5>Outpass 1</h5>
-                    <% const OutpassDateTimeOut = new Date(acceptedoutpasses[i].datetimeout); %>
-                    <p>DateTimeOut: <span class="font-thin"><%= OutpassDateTimeOut.toLocaleString('en-US', { timeZone: 'UTC' }) %></span></p>
-                </div>
+            <div class="outpass-card">
+                <h3>Outpass <%= i + 1 %></h3>
+                <% const OutpassDateTimeOut = new Date(acceptedoutpasses[i].datetimeout); %>
+                <p>
+                    DateTimeOut:
+                    <span style="font-weight: normal;">
+                        <%= OutpassDateTimeOut.toLocaleString('en-US', { timeZone: 'UTC' }) %>
+                    </span>
+                </p>
+                <!-- Add more dynamic content here based on your data -->
             </div>
             <% } %>
         </div>

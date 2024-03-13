@@ -7,11 +7,14 @@ const passport = require("passport");
 const session = require("express-session");
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
+const csrf = require("tiny-csrf");
+const cookieParser = require('cookie-parser');
 const qr = require('qrcode');
 const saltRounds = 10;
 
-const {User,Students,OutpassRequest} = require('./models');
-const { where } = require('sequelize');
+const {User} = require('./models');
+// const { where } = require('sequelize');
+
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -20,6 +23,7 @@ app.use(flash());
 app.use(bodypaser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cookieParser("secret key"));
 
 app.use(
     session({
@@ -31,37 +35,41 @@ app.use(
         saveUninitialized: true,
     })
 );
-app.use(function (req, res, next) {
-    res.locals.messages = req.flash();
+app.use(function(request, response, next) {
+    response.locals.messages = request.flash();
     next();
-});
+  });
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+const userauth = async(mail,password,done) =>{
+    try{
+        const user = await User.findOne({where : {email:mail}});
+        if(!user){
+            // request.flash("error","User Not Found");
+            return done(null,false,{message: "User Not Found"});
+        }
+        const result = await bcrypt.compare(password,user.password);
+        if(result){
+            return done(null,user);
+        }else{
+            // request.flash("error","Invalid")
+            return done(null,false,{message:"Invalid password"});
+        }
+    }catch(err){
+        console.log("Error in userauth",err);
+        return done(err);
+    }
+}
+console.log(userauth);
 passport.use(
     new LocalStrategy(
         {
             usernameField: "email",
             passwordField: "password",
         },
-        (username, password, done) => {
-            User.findOne({
-                where: {
-                    email: username,
-                },
-            })
-                .then(async (user) => {
-                    const result = await bcrypt.compare(password, user.password);
-                    if (result) {
-                        return done(null, user);
-                    } else {
-                        return done(null, false, { message: "Invalid Password" });
-                    }
-                })
-                .catch((error) => {
-                    return done(null, false, { message: "Invalid E-mail" });
-                });
-        }
+        userauth,
     )
 );
 passport.serializeUser((user, done) => {
@@ -79,8 +87,36 @@ passport.deserializeUser((id, done) => {
         });
 });
 
-app.get("/",async (req,res) => {
-    const hashedpwd = await bcrypt.hash("abc@121", saltRounds);
+
+//csrf token 
+const csrfProtection = csrf("123456789iamasecret987654321look", [
+    "POST",
+    "PUT",
+    "DELETE",
+  ]);
+app.use(csrfProtection);
+
+
+
+const {islogined, logincheck, isstudent,isadmin,isscanner} = require('./middleware');
+
+
+//routes
+
+app.get("/",logincheck,(request,response) => {
+    response.redirect('/login');
+})
+
+app.get("/login",islogined,(request,response) => {
+    response.render("main",{
+        error: request.flash("error"),
+        success: request.flash("success"),
+        csrfToken: request.csrfToken(),
+    })
+})
+
+// app.get("/",async (req,res) => {
+    // const hashedpwd = await bcrypt.hash("abc@121", saltRounds);
     // await User.create({
     //     firstName: "Naresh",
     //     lastName: "G",
@@ -108,122 +144,59 @@ app.get("/",async (req,res) => {
     //     email: "a@gmail.com",
     // })
 
-    res.render("main"); 
-})
+//     res.render("main"); 
+// })
 
-app.get("/user",async(req,res) => {
-    const user = await User.findByPk(req.user.id);
-    const student = await Students.findByPk(req.user.id);
-    const reqoutpasses = await OutpassRequest.findOutPassByUserId({userid: req.user.id});
-    res.render("Studentview",{
-        user,student,outpasses: reqoutpasses
-    });
-})
-
-app.get("/admin",async(req,res) => {
-    const user = await User.findByPk(req.user.id);
-    const pendingoutpasses = await OutpassRequest.findPendingOutpasses();
-    const outpassesWithUsers = {};
-    for (const outpass of pendingoutpasses) {
-        const userDetail = await Students.findStudentByUserId(outpass.userid);
-        console.log(userDetail);
-        if (userDetail) {
-            outpassesWithUsers[outpass.id] = {
-                outpass,
-                user: userDetail,
-            };
-        }
-    }
-    // console.log(pendingoutpasses,outpassesWithUsers);
-    res.render("Accepterview",{
-        outpassesWithUsers,user
-    });
-})
 
 app.post(
-    "/session",
+    "/login",
     passport.authenticate("local", {
-        failureRedirect: "/",
+        failureRedirect: "/login",
         failureFlash: true,
     }),
-    async (req, res) => {
-        console.log(req.user.id);
-        if (req.user.role == "Student") {
-            res.redirect("/user");
+    async (request, response) => {
+        console.log(request.user.id);
+        if (request.user.role == "Student") {
+            response.redirect("/student");
         }
-        if (req.user.role == "Admin") {
-           res.redirect("/admin");
+        if (request.user.role == "Admin") {
+           response.redirect("/admin");
         }
-        if(req.user.role == "Scanner"){
-            res.render("Scannerview");
+        if(request.user.role == "Scanner"){
+            response.render("Scannerview");
         }
     }
 );
 
 
-app.get("/requestoutpass",async(req,res) => {
-    res.render("outpass-request");
+app.get("/signout", function (request, response) {
+    request.logout(function (err) {
+      if (err) {
+        return next(err);
+      }
+      response.redirect("/login");
+    });
+  });
+
+const studentview = require('./routes/studentview');
+const adminview = require('./routes/adminview');
+const requestoutpass = require('./routes/requestoutpass');
+const getQR = require('./routes/getQR');
+const acceptoutpass = require('./routes/acceptoutpass');
+const scanned = require('./routes/scanned');
+const acceptedoutpasses = require('./routes/acceptedoutpasses');
+
+app.use('/student',csrfProtection,logincheck,isstudent,studentview);
+app.use('/admin',csrfProtection,logincheck,isadmin,adminview);
+app.get('/scanner',csrfProtection,logincheck,isscanner,async(request,response) => {
+    response.render('Scannerview',{
+        csrfToken: request.csrfToken(),
+    });
 })
-
-app.post("/addrequest",async (req,res) => {
-    const r =await OutpassRequest.create({
-        PlaceToBeVisited: req.body.PlaceToBeVisited,
-        PurposeOfVisit: req.body.PurposeOfVisit,
-        datetimeout: req.body.DateTimeOut,
-        datetimein: req.body.DateTimein,
-        status: false,
-        userid: req.user.id
-    })
-    console.log(r);
-    res.redirect("/user");
-})
-
-app.get("/acceptoutpass/:id", async (req,res) => {
-    const outpass = await OutpassRequest.findByPk(req.params.id);
-    const req_stu_details = await Students.findStudentByUserId(outpass.userid);
-    const qrData = {
-        outpassId: req.params.id,
-        StudentName: req_stu_details.firstName, 
-        College: req_stu_details.college,
-        Mobile: req_stu_details.mobile,
-        CurrentYear: req_stu_details.currentyear,
-        DateTimeOut: outpass.datetimeout,
-        DateTimeIn: outpass.datetimein
-    };
-    const qrCodeBuffer = await qr.toBuffer(JSON.stringify(qrData));
-    const acceptedoutpass = await OutpassRequest.accept({id: req.params.id,qr:qrCodeBuffer});
-    console.log(outpass);
-    res.redirect("/admin");
-})
-
-app.get("/getQRCode/:id", async (req, res) => {
-    try {
-        const outpassId = req.params.id;
-
-        // Fetch the QR code BLOB data from the database based on the outpass ID
-        const outpass = await OutpassRequest.findByPk(outpassId);
-        if (!outpass) {
-            return res.status(404).send("Outpass not found");
-        }
-
-        // Send the BLOB data as a response
-        res.setHeader('Content-Type', 'image/png');
-        res.send(outpass.qrimage); // Assuming "qrCodeImage" is the field in your model containing the QR code BLOB data
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("An error occurred");
-    }
-});
-
-
-app.get("/acceptedoutpasses", async(req,res) => {
-    const acceptedoutpasses = await OutpassRequest.findAll({where:{status:true}});
-    res.render("AcceptedOutpasses",{acceptedoutpasses});
-})
-
-app.get("/scanned/:id",async(req,res) => {
-    const outpass = await OutpassRequest.scanned({id:req.params.id});
-    res.render("Scannerview");
-})
+app.use('/requestoutpass',csrfProtection,requestoutpass);
+app.use('/getQRCode',csrfProtection,getQR);
+app.use('/acceptoutpass',csrfProtection,acceptoutpass);
+app.use('/scanned',csrfProtection,scanned);
+app.use('/acceptedoutpasses',csrfProtection,acceptedoutpasses);
 
 module.exports = app;

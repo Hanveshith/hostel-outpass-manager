@@ -1,34 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostel-Outpass-Manager</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include Tailwind CSS as a stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Custom Styles */
+        body {
+            background: #f4f4f4;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: #2a2a2a;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: #2a2a2a;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input {
+            width: calc(100% - 12px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+            color: #333;
+            font-size: 1em;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #2a2a72;
+            color: #fff;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #1c1c4f;
+        }
+    </style>
 </head>
-<body class="h-screen">
-    <div class="flex justify-center h-48 bg-green-500 place-items-center rounded-b-xl">
-        <h1 class="text-white text-4xl">WELCOME</h1>
+
+<body>
+
+    <div class="container">
+        <h2>Hostel Outpass Manager</h2>
+        <form action="/login" method="post">
+            <input name="_csrf" value="<%= csrfToken %>" type="hidden"/>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="john.doe@example.com">
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="********">
+
+            <div style="text-align: right;">
+                <a href="#" style="color: #2a2a2a; text-decoration: underline;">Forgot your password?</a>
+            </div>
+
+            <button type="submit">Log In</button>
+        </form>
+        <%- include('error') %>
     </div>
-    <div class="flex justify-center mt-10">
-        <h1 class="text-gray-600 text-2xl">Login</h1>
-    </div>
-    <div class="mt-1 p-0">
-        <div class="flex flex-col flex-wrap content-center w-full">
-            <form action="/session" method="post">
-                <div class="flex flex-col mt-2">
-                    <label for="email" class="text-xl text-gray-600">Email</label>
-                    <input class="w-full h-10 border-2 border-slate-600 rounded-sm" name="email" type="email" placeholder="Enter mail">
-                </div>
-                <div class="flex flex-col mt-2">
-                    <label for="password" class="text-xl text-gray-600">Password</label>
-                    <input class="w-full h-10 border-2 border-slate-600 rounded-sm" name="password" type="password" placeholder="Enter Password">
-                </div>
-                <div>
-                    <button type="submit" class="bg-green-500 border-2 border-slate-600 rounded-sm mt-2">Sign In</button>
-                </div>
-            </form>
-        </div>
-    </div>
+
 </body>
+
 </html>

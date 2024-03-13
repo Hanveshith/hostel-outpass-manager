@@ -12,9 +12,19 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static scanned({id}){
+      return this.create(
+        {
+          fOutpassId: id,
+          Outtime: new Date(),
+        }
+      );
+    }
   }
   ScannedOutpasses.init({
-    fOutpassId: DataTypes.INTEGER
+    fOutpassId: DataTypes.INTEGER,
+    Outtime: DataTypes.DATE,
+    intime: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'ScannedOutpasses',

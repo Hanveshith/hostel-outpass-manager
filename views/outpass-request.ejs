@@ -14,7 +14,8 @@
             </div>
         </div>
         <div class="m-2 p-2 border-2 bg-green-500 rounded-lg">
-            <form action="/addrequest" method="post">
+            <form action="/requestoutpass" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                 <div class="p-2 flex flex-col">
                     <div class="flex flex-col mb-4">
                         <label class="text-xl text-white" for="place">PLACE TO BE VISITED :</label>
