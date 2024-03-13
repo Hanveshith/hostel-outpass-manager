@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 const qr = require('qrcode');
 const saltRounds = 10;
 
-const {User} = require('./models');
+const {User,Students} = require('./models');
 // const { where } = require('sequelize');
 
 
