@@ -146,7 +146,36 @@ app.get("/login",islogined,(request,response) => {
 
 //     res.render("main"); 
 // })
-
+app.get('/createusers', async(request,response) => {
+    const hashedpwd = await bcrypt.hash("abc@121", saltRounds);
+    await User.create({
+        firstName: "Naresh",
+        lastName: "G",
+        email: "b@gmail.com",
+        password: hashedpwd,
+        role: "Admin"
+    })
+    await User.create({
+        firstName: "Hanveshith",
+        lastName: "Reddy",
+        email: "a@gmail.com",
+        password: hashedpwd,
+        role: "Student"
+    })
+    await User.create({
+        firstName: "WatchMan",
+        lastName: "G1",
+        email: "c@gmail.com",
+        password: hashedpwd,
+        role: "Scanner"
+    })
+    await Students.create({
+        firstName: "Hanveshith",
+        lastName: "Reddy",
+        email: "a@gmail.com",
+    })
+    response.send("CREATED SUCCESSFULLY");
+})
 
 app.post(
     "/login",
