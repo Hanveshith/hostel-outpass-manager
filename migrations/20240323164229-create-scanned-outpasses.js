@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      fOutpassId: {
+      OutpassId: {
         type: Sequelize.INTEGER
       },
       Outtime: {
@@ -17,6 +17,16 @@ module.exports = {
       },
       intime: {
         type: Sequelize.DATE
+      },
+      checkout: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+    defaultValue: false
+      },
+      checkIn: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+    defaultValue: false
       },
       createdAt: {
         allowNull: false,

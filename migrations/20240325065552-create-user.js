@@ -21,6 +21,27 @@ module.exports = {
       password: {
         type: Sequelize.STRING
       },
+      college: {
+        type: Sequelize.STRING
+      },
+      mobile: {
+        type: Sequelize.STRING
+      },
+      address: {
+        type: Sequelize.STRING
+      },
+      parentcontact: {
+        type: Sequelize.STRING
+      },
+      currentyear: {
+        type: Sequelize.STRING
+      },
+      branch: {
+        type: Sequelize.STRING
+      },
+      photo: {
+        type: Sequelize.STRING
+      },
       role: {
         type: Sequelize.STRING
       },

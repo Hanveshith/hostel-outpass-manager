@@ -1,12 +1,12 @@
 const { User, OutpassRequest } = require('../models');
 
-const acceptedoutpasses = async (req, res) => {
+const rejectedoutpasses = async (req, res) => {
     try {
-        const acceptedoutpasses = await OutpassRequest.findAll({ where: { status: true, issuedby: req.user.id } });
+        const rejectedoutpasses = await OutpassRequest.findAll({ where: { status: false, issuedby: req.user.id } });
         const userNamesAndDatetimeouts = [];
 
         // Use map instead of forEach to get an array of promises
-        const promises = acceptedoutpasses.map(async outpass => {
+        const promises = rejectedoutpasses.map(async outpass => {
             const userName = await User.findByPk(outpass.userid);
             const datetimeout = outpass.datetimeout;
             const userAndDatetime = {
@@ -26,4 +26,4 @@ const acceptedoutpasses = async (req, res) => {
     }
 }
 
-module.exports = { acceptedoutpasses };
+module.exports = { rejectedoutpasses };

@@ -17,6 +17,7 @@ const requestverify = async (request,reponse) => {
             PurposeOfVisit: request.body.PurposeOfVisit,
             datetimeout: request.body.DateTimeOut,
             datetimein: request.body.DateTimein,
+            scannedstatus: false,
             status: false,
             userid: request.user.id
         })

@@ -12,25 +12,26 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
-    static findOutPassByUserId({userid}){
+    static findOutPassByUserId({ userid }) {
       return this.findAll({
-        where:{
+        where: {
           userid: userid,
         }
       })
     }
-    static findPendingOutpasses(){
+    static findPendingOutpasses() {
       return this.findAll({
-        where:{
+        where: {
           status: false,
         }
       })
     }
-    static accept({ id,qr }) {
+    static accept({ id, qr ,issuedid}) {
       return this.update(
         {
           status: true,
           qrimage: qr,
+          issuedby: issuedid
         },
         {
           where: {
@@ -39,15 +40,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       );
     }
-    static scanned({id}){
+    static scanned({ id }) {
       return this.update(
         {
           scannedstatus: true,
-        },{
-          where:{
-            id: id
-          },
-        }
+        }, {
+        where: {
+          id: id
+        },
+      }
       );
     }
   }
@@ -59,7 +60,8 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.BOOLEAN,
     qrimage: DataTypes.BLOB,
     userid: DataTypes.INTEGER,
-    scannedstatus: DataTypes.BOOLEAN
+    scannedstatus: DataTypes.BOOLEAN,
+    issuedby: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'OutpassRequest',

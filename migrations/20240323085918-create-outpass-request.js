@@ -33,6 +33,9 @@ module.exports = {
       scannedstatus: {
         type: Sequelize.BOOLEAN
       },
+      issuedby: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

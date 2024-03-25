@@ -41,3 +41,38 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+
+
+// static findPendingOutpasses(){
+//   return this.findAll({
+//     where:{
+//       status: false,
+//     }
+//   })
+// }
+// static accept({ id,qr }) {
+//   return this.update(
+//     {
+//       status: true,
+//       qrimage: qr,
+//     },
+//     {
+//       where: {
+//         id: id,
+//       },
+//     }
+//   );
+// }
+// static scanned({id}){
+//   return this.update(
+//     {
+//       scannedstatus: true,
+//     },{
+//       where:{
+//         id: id
+//       },
+//     }
+//   );
+// }
+

@@ -169,11 +169,6 @@ app.get('/createusers', async(request,response) => {
         password: hashedpwd,
         role: "Scanner"
     })
-    await Students.create({
-        firstName: "Hanveshith",
-        lastName: "Reddy",
-        email: "a@gmail.com",
-    })
     response.send("CREATED SUCCESSFULLY");
 })
 
@@ -214,6 +209,9 @@ const getQR = require('./routes/getQR');
 const acceptoutpass = require('./routes/acceptoutpass');
 const scanned = require('./routes/scanned');
 const acceptedoutpasses = require('./routes/acceptedoutpasses');
+const rejectedoutpasses = require('./routes/rejectedoutpasses');
+const checkins = require('./routes/checkins');
+const checkouts = require('./routes/checkouts');
 
 app.use('/student',csrfProtection,logincheck,isstudent,studentview);
 app.use('/admin',csrfProtection,logincheck,isadmin,adminview);
@@ -227,5 +225,8 @@ app.use('/getQRCode',csrfProtection,getQR);
 app.use('/acceptoutpass',csrfProtection,acceptoutpass);
 app.use('/scanned',csrfProtection,scanned);
 app.use('/acceptedoutpasses',csrfProtection,acceptedoutpasses);
+app.use('/rejectedoutpasses',csrfProtection,rejectedoutpasses);
+app.use('/checkins',csrfProtection,checkins);
+app.use('/checkouts',csrfProtection,checkouts);
 
 module.exports = app;

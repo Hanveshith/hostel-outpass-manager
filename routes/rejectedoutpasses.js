@@ -2,8 +2,8 @@ const express = require('express');
 const route = express.Router();
 
 const {logincheck} = require('../middleware');
-const {acceptedoutpasses} = require('../controllers/acceptedoutpasses');
+const {rejectedoutpasses} = require('../controllers/rejectedoutpasses');
 
-route.get('/',logincheck,acceptedoutpasses);
+route.get('/',logincheck,rejectedoutpasses);
 
 module.exports = route; 

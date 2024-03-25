@@ -1,6 +1,6 @@
 'use strict';
 const {
-  Model
+  Model, where
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class ScannedOutpasses extends Model {
@@ -12,19 +12,46 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
     }
+    static Outscan({id}){
+      return this.update(
+        {
+          Outtime: new Date(),
+          checkout: true
+        },{
+          where:{
+            OutpassId: id,
+          }
+        }
+      );
+    }
     static scanned({id}){
       return this.create(
         {
-          fOutpassId: id,
-          Outtime: new Date(),
+          OutpassId: id,
+          checkIn: false,
+          checkout:false
+        }
+      );
+    }
+    static Inscan({id}){
+      return this.update(
+        {
+          intime: new Date(),
+          checkIn: true
+        },{
+          where:{
+            OutpassId: id,
+          }
         }
       );
     }
   }
   ScannedOutpasses.init({
-    fOutpassId: DataTypes.INTEGER,
+    OutpassId: DataTypes.INTEGER,
     Outtime: DataTypes.DATE,
-    intime: DataTypes.DATE
+    intime: DataTypes.DATE,
+    checkout: DataTypes.BOOLEAN,
+    checkIn: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'ScannedOutpasses',

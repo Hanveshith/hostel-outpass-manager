@@ -1,44 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-bs-theme="light" lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <title>Request-Outpass</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>form</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
 </head>
+
 <body>
-    <div class="container">
-        <div>
-            <div class="h-20 flex  justify-center items-center bg-amber-400 rounded-b-lg h-12 text-2xl font-medium leading-tight text-gray-600">
-                <h5>REQUEST OUTPASS</h5>
-            </div>
+    <nav style="height: 45px;background: #FECD45;border-bottom-right-radius: 7px;border-bottom-left-radius: 7px;">
+        <div style="border-bottom-style: none;">
+            <h1 style="font-size: 24.5px;color: var(--bs-body-bg);text-align: center;margin: 0px;padding: 7px;">Request Outpass</h1>
         </div>
-        <div class="m-2 p-2 border-2 bg-green-500 rounded-lg">
+    </nav>
+    <div class="container">
+        <div style="margin-top: 12px;">
             <form action="/requestoutpass" method="post">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <div class="p-2 flex flex-col">
-                    <div class="flex flex-col mb-4">
-                        <label class="text-xl text-white" for="place">PLACE TO BE VISITED :</label>
-                        <input class="h-8 p-2 rounded  hover:bg-gray-700 hover:text-white focus:outline-0" type="text" id="place" name="PlaceToBeVisited" placeholder="Enter place to be visited"/>
-                    </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="text-xl text-white" for="purpose">PURPOSE :</label>
-                        <input class="h-8 p-2 rounded  hover:bg-gray-700 hover:text-white focus:outline-0" type="text" id="purpose" name="PurposeOfVisit" placeholder="Enter purpose of visit"/>
-                    </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="text-xl text-white" for="datetimeout">DATE AND TIMEOUT :</label>
-                        <input class="h-8 p-2 rounded focus:outline-0" type="datetime-local" id="datetimeout" name="DateTimeOut"/>
-                    </div>
-                    <div class="flex flex-col mb-4">
-                        <label class="text-xl text-white" for="datetimein">DATE AND TIMEIN :</label>
-                        <input class="h-8 p-2 rounded focus:outline-0" type="datetime-local" id="datetimein" name="DateTimein" />
-                    </div>
-                </div>
-                <div>
-                    <button class=" m-2 p-2 hover:text-white hover:bg-amber-500 bg-amber-400 text w-20 rounded" type="submit">REQUEST</button>
-                </div>
+                <div class="form-group"><label class="form-label" for="place">Place to be visited:</label><input class="form-control form-control" type="text" id="place" name="PlaceToBeVisited"></div>
+                <div class="form-group"><label class="form-label" for="purpose">Purpose:</label><input class="form-control form-control" type="text" id="purpose" name="PurposeOfVisit"></div>
+                <div class="form-group"><label class="form-label" for="dateTimeOut">Date and Timeout:</label><input class="form-control form-control" type="datetime-local" id="dateTimeOut" name="DateTimeOut"></div>
+                <div class="form-group"><label class="form-label" for="dateTimeIn">Date and Time In:</label><input class="form-control form-control" type="datetime-local" id="dateTimeIn" name="DateTimein"></div>
+                <button class="btn btn-primary" type="submit" style="margin-top: 6px;background: #2568FB;">Button</button>
             </form>
         </div>
     </div>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
+
 </html>
