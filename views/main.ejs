@@ -1,103 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel-Outpass-Manager</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        /* Custom Styles */
-        body {
-            background: #f4f4f4;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .container {
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            max-width: 400px;
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .container h2 {
-            font-size: 2em;
-            margin-bottom: 20px;
-            color: #2a2a2a;
-        }
-
-        label {
-            font-size: 1.2em;
-            color: #2a2a2a;
-            display: block;
-            margin-bottom: 5px;
-            text-align: left;
-        }
-
-        input {
-            width: calc(100% - 12px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background: #f9f9f9;
-            color: #333;
-            font-size: 1em;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background: #2a2a72;
-            color: #fff;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        button:hover {
-            background: #1c1c4f;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div class="container">
-        <h2>Hostel Outpass Manager</h2>
-        <form action="/login" method="post">
-            <input name="_csrf" value="<%= csrfToken %>" type="hidden"/>
-            <label for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="john.doe@example.com">
-
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" placeholder="********">
-
-            <div style="text-align: right;">
-                <a href="#" style="color: #2a2a2a; text-decoration: underline;">Forgot your password?</a>
-            </div>
-
-            <button type="submit">Log In</button>
-        </form>
-        <%- include('error') %>
-    </div>
-
-</body>
-
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html data-bs-theme="light" lang="en">
 
@@ -106,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>login</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="assets/img/logo.jpg">
     <link rel="stylesheet" href="assets/css/Login-Form-Basic-icons.css">
 </head>
 
@@ -113,10 +14,7 @@
     <section class="position-relative py-4 py-xl-5">
         <div class="container">
             <div class="row mb-5">
-                <div class="col-md-8 col-xl-6 text-center mx-auto">
-                    <h2 style="margin: 25px;">Log in</h2>
-                    <p class="w-lg-50"></p>
-                </div>
+                <div class="col-md-8 col-xl-6 text-center mx-auto"><img src="assets/img/logo.jpg" style="width: 140px;height: 140px;"></div>
             </div>
             <div class="row d-flex justify-content-center">
                 <div class="col-md-6 col-xl-4">
@@ -136,8 +34,8 @@
                     </div>
                 </div>
             </div>
+            <%- include('error') %>
         </div>
-        <%- include('error') %>
     </section>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 </body>
