@@ -134,31 +134,33 @@
         });
 
 
-        function requestCameraAccess() {
-        // Request access to the camera
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function(stream) {
-                // Access granted, continue with Instascan initialization
-                Instascan.Camera.getCameras().then(function (cameras) {
-                    if (cameras.length > 0) {
-                        // Start the scanner with the first available camera
-                        scanner.start(cameras[0]);
-                    } else {
-                        console.error('No cameras found.');
-                    }
-                }).catch(function (error) {
-                    console.error(error);
+        
+        // Request access to the camera when the page is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Request access to the camera
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    // Access granted, continue with Instascan initialization
+                    const scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
+                    scanner.addListener('scan', function(content) {
+                        console.log('Scanned content:', content);
+                        // Handle scanned content here
+                    });
+                    Instascan.Camera.getCameras().then(function (cameras) {
+                        if (cameras.length > 0) {
+                            scanner.start(cameras[0]);
+                        } else {
+                            console.error('No cameras found.');
+                        }
+                    }).catch(function (error) {
+                        console.error('Error accessing cameras:', error);
+                    });
+                })
+                .catch(function(error) {
+                    // Handle errors, such as permission denied
+                    console.error('Error accessing the camera:', error);
                 });
-            })
-            .catch(function(error) {
-                // Handle errors, such as permission denied
-                console.error('Error accessing the camera:', error);
-            });
-    }
-
-    // Call the function to request camera access
-    requestCameraAccess();
-
+        });
     </script>
 </body>
 
