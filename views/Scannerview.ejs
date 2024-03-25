@@ -133,15 +133,30 @@
         });
 
 
-        Instascan.Camera.getCameras().then(function (cameras) {
-            if (cameras.length > 0) {
-                scanner.start(cameras[0]);
-            } else {
-                console.error('No cameras found.');
-            }
-        }).catch(function (error) {
-            console.error(error);
-        });
+        function requestCameraAccess() {
+        // Request access to the camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                // Access granted, continue with Instascan initialization
+                Instascan.Camera.getCameras().then(function (cameras) {
+                    if (cameras.length > 0) {
+                        // Start the scanner with the first available camera
+                        scanner.start(cameras[0]);
+                    } else {
+                        console.error('No cameras found.');
+                    }
+                }).catch(function (error) {
+                    console.error(error);
+                });
+            })
+            .catch(function(error) {
+                // Handle errors, such as permission denied
+                console.error('Error accessing the camera:', error);
+            });
+    }
+
+    // Call the function to request camera access
+    requestCameraAccess();
 
     </script>
 </body>
